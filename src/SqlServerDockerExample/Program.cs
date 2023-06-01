@@ -8,9 +8,15 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 
+var dbHost = Environment.GetEnvironmentVariable("DBHOST") ?? "localhost";
+var dbPort = Environment.GetEnvironmentVariable("DBPORT") ?? "1433";
+var dbUser = Environment.GetEnvironmentVariable("DBUSER") ?? "sa";
+var dbPassword = Environment.GetEnvironmentVariable("DBPASSWORD") ?? "Your_password123";
+var dbConnectionString = $"Server={dbHost},{dbPort};Database=master;User Id={dbUser};Password={dbPassword};";
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(dbConnectionString);
 });
 builder.Services.AddScoped<DepartmentService>();
 
