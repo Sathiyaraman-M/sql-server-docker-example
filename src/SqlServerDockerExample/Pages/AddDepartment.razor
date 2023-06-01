@@ -1,0 +1,30 @@
+﻿@page "/departments/add"
+@using SqlServerDockerExample.Data
+@inject DepartmentService DepartmentService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Add Department</PageTitle>
+
+<h1>New Department</h1>
+
+<EditForm Model="_department" OnValidSubmit="HandleValidSubmit">
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <InputText class="form-control" id="name" @bind-Value="_department.Name" />
+    </div>
+    <div class="mb-3">
+        <label for="shortname" class="form-label">Short Name</label>
+        <InputText class="form-control" id="shortname" @bind-Value="_department.ShortName" />
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+@code {
+    private readonly Department _department = new();
+    
+    private async Task HandleValidSubmit()
+    {
+        await DepartmentService.AddDepartmentAsync(_department);
+        NavigationManager.NavigateTo("/departments");
+    }
+}

@@ -1,0 +1,54 @@
+﻿@page "/departments/{Id:int}"
+@using SqlServerDockerExample.Data
+@inject DepartmentService DepartmentService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Update Department</PageTitle>
+
+<h1>Update Department</h1>
+
+@if (_department == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="_department" OnValidSubmit="HandleValidSubmit">
+        <div class="mb-3">
+            <label for="id" class="form-label">Id</label>
+            <input class="form-control" id="id" value="@_department.Id" disabled/>
+        </div>
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <InputText class="form-control" id="name" @bind-Value="_department.Name"/>
+        </div>
+        <div class="mb-3">
+            <label for="shortname" class="form-label">Short Name</label>
+            <InputText class="form-control" id="shortname" @bind-Value="_department.ShortName"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </EditForm>
+}
+
+@code {
+    
+    [Parameter]
+    public int Id { get; set; }
+    
+    private Department _department;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _department = await DepartmentService.GetDepartmentByIdAsync(Id);
+        if(_department == null)
+        {
+            NavigationManager.NavigateTo("/departments");
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await DepartmentService.UpdateDepartmentAsync(_department);
+        NavigationManager.NavigateTo("/departments");
+    }
+}

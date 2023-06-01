@@ -1,0 +1,74 @@
+﻿@page "/departments"
+@using SqlServerDockerExample.Data
+@inject DepartmentService DepartmentService
+
+<PageTitle>Departments</PageTitle>
+
+<h1>Departments</h1>
+
+<div class="d-flex gap-2">
+    <a class="btn btn-primary" href="/departments/add">Add Department</a> 
+    <button class="btn btn-secondary" @onclick="LoadDepartments">Refresh</button>
+</div>
+
+<table class="table table-striped table-hover">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Department Name</th>
+        <th>Short Name</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @if(_departments != null && _departments.Count > 0)
+    {
+        @foreach (var department in _departments)
+        {
+            <tr>
+                <td>@department.Id</td>
+                <td>@department.Name</td>
+                <td>@department.ShortName</td>
+                <td>
+                    <a class="btn btn-warning" href="@("/departments/" + department.Id)">Edit</a>
+                    <button class="btn btn-danger" @onclick="() => DeleteDepartment(department.Id)">Delete</button>
+                </td>
+            </tr>
+        }
+    }
+    else if (_departments != null && _departments.Count == 0)
+    {
+        <tr>
+            <td colspan="4" style="text-align: center">No departments found.</td>
+        </tr>
+    }
+    else
+    {
+        <tr>
+            <td colspan="4" style="text-align: center">Loading...</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+    
+    private List<Department> _departments = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDepartments();
+    }
+    
+    private async Task LoadDepartments()
+    {
+        _departments = await DepartmentService.GetDepartmentsAsync();
+    }
+    
+    private async Task DeleteDepartment(int id)
+    {
+        await DepartmentService.DeleteDepartmentAsync(id);
+        await LoadDepartments();
+    }
+
+}
