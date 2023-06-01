@@ -16,7 +16,8 @@ var dbConnectionString = $"Server={dbHost},{dbPort};Database=master;User Id={dbU
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlServer(dbConnectionString);
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    // options.UseSqlServer(dbConnectionString);
 });
 builder.Services.AddScoped<DepartmentService>();
 
